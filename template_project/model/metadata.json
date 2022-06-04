@@ -1,0 +1,102 @@
+{
+  "modules": {
+    "default": {
+      "executors": [
+        "graph"
+      ],
+      "export_datetime": "2023-01-18 18:17:26Z",
+      "memory": {
+        "functions": {
+          "main": [
+            {
+              "constants_size_bytes": 0,
+              "device": 1,
+              "inputs": {
+                "dense_2_input": {
+                  "dtype": "float32",
+                  "size": 4
+                }
+              },
+              "io_size_bytes": 8,
+              "outputs": {
+                "output": {
+                  "dtype": "float32",
+                  "size": 4
+                }
+              },
+              "workspace_size_bytes": 160
+            }
+          ],
+          "operator_functions": [
+            {
+              "function_name": "tvmgen_default_fused_nn_contrib_dense_pack_add_nn_relu",
+              "workspace": [
+                {
+                  "device": 1,
+                  "workspace_size_bytes": 32
+                }
+              ]
+            },
+            {
+              "function_name": "tvmgen_default_fused_nn_contrib_dense_pack_add",
+              "workspace": [
+                {
+                  "device": 1,
+                  "workspace_size_bytes": 16
+                }
+              ]
+            },
+            {
+              "function_name": "tvmgen_default_fused_reshape_1",
+              "workspace": [
+                {
+                  "device": 1,
+                  "workspace_size_bytes": 0
+                }
+              ]
+            },
+            {
+              "function_name": "tvmgen_default_fused_reshape",
+              "workspace": [
+                {
+                  "device": 1,
+                  "workspace_size_bytes": 0
+                }
+              ]
+            },
+            {
+              "function_name": "tvmgen_default_fused_nn_contrib_dense_pack_add_nn_relu_1",
+              "workspace": [
+                {
+                  "device": 1,
+                  "workspace_size_bytes": 32
+                }
+              ]
+            }
+          ]
+        },
+        "sids": [
+          {
+            "input_binding": "dense_2_input",
+            "size_bytes": 4,
+            "storage_id": 0
+          },
+          {
+            "size_bytes": 4,
+            "storage_id": 1
+          },
+          {
+            "size_bytes": 64,
+            "storage_id": 2
+          }
+        ]
+      },
+      "model_name": "default",
+      "style": "full-model",
+      "target": [
+        "c -keys=cpu "
+      ]
+    }
+  },
+  "version": 7
+}
