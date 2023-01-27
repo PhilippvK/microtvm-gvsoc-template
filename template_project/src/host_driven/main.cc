@@ -363,13 +363,16 @@ volatile uint32_t ticks = 0;
 ssize_t write_serial(void* unused_context, const uint8_t* data, size_t size) {
   g_num_bytes_requested += size;
 
-  for (size_t i = 0; i < size; i++) {
-    //uart_poll_out(tvm_uart, data[i]);
-    //printf("uart_sendchar: %d (%c)\n", data[i], data[i]);
-    // uart_sendchar(data[i]);
-    putchar(data[i]);
-    g_num_bytes_written++;
-  }
+  semihost_write(STDOUT_FILENO, (uint8_t*)data, size);
+  g_num_bytes_written += size;
+  // for (size_t i = 0; i < size; i++) {
+  //   //uart_poll_out(tvm_uart, data[i]);
+  //   //printf("uart_sendchar: %d (%c)\n", data[i], data[i]);
+  //   // uart_sendchar(data[i]);
+  //   // putchar(data[i]);
+  //   uint8_t c = data[i];
+  //   g_num_bytes_written++;
+  // }
 
   return size;
 }
@@ -382,8 +385,8 @@ size_t TVMPlatformFormatMessage(char* out_buf, size_t out_buf_size_bytes, const 
 
 // Called by TVM when an internal invariant is violated, and execution cannot continue.
 void TVMPlatformAbort(tvm_crt_error_t error) {
-  //TVMLogf("TVMError: 0x%x", error);
-  printf("TVMError: 0x%x", error);
+  TVMLogf("TVMError: 0x%x", error);
+  // printf("TVMError: 0x%x", error);
   //exit(1);
   //sys_reboot(SYS_REBOOT_COLD);
   // TODO
@@ -417,7 +420,8 @@ tvm_crt_error_t TVMPlatformGenerateRandom(uint8_t* buffer, size_t num_bytes) {
 // Heap for use by TVMPlatformMemoryAllocate.
 //K_HEAP_DEFINE(tvm_heap, 216 * 1024);
 tvm_crt_error_t TVMPlatformMemoryAllocate(size_t num_bytes, DLDevice dev, void** out_ptr) {
-  printf("TVMPlatformMemoryAllocate %u\n", num_bytes);
+  // printf("TVMPlatformMemoryAllocate %u\n", num_bytes);
+  TVMLogf("TVMPlatformMemoryAllocate %u\n", num_bytes);
   if (num_bytes == 0) {
     num_bytes = sizeof(int);
   }
@@ -426,7 +430,8 @@ tvm_crt_error_t TVMPlatformMemoryAllocate(size_t num_bytes, DLDevice dev, void**
 }
 
 tvm_crt_error_t TVMPlatformMemoryFree(void* ptr, DLDevice dev) {
-  printf("TVMPlatformMemoryFree\n");
+  // printf("TVMPlatformMemoryFree\n");
+  TVMLogf("TVMPlatformMemoryFree\n");
   free(ptr);
   return kTvmErrorNoError;
 }
@@ -473,7 +478,11 @@ tvm_crt_error_t TVMPlatformTimerStop(double* elapsed_time_seconds) {
   g_utvm_timer_running = 0;
   // unsigned long g_utvm_stop_time = micros() - g_utvm_start_time_micros;
   int g_utvm_stop_time = csr_read(0x780);
-  *elapsed_time_seconds = (double)g_utvm_stop_time;
+  if (g_utvm_stop_time < g_utvm_start_time_micros) { // overflow
+    *elapsed_time_seconds = (g_utvm_stop_time - g_utvm_start_time_micros) / 100000000.0;
+  } else {
+    *elapsed_time_seconds = (g_utvm_stop_time - g_utvm_start_time_micros) / 100000000.0;
+  }
   return kTvmErrorNoError;
 }
 
@@ -535,9 +544,9 @@ tvm_crt_error_t TVMPlatformTimerStop(double* elapsed_time_seconds) {
 //     clint_cfg_timecompare(compare);
 // }
 
-void main(void) {
-  printf("ABC\n");
-  double x = 3.14;
+int main(void) {
+  // printf("ABC\n");
+  // double x = 3.14;
 
   // Claim console device.
   //tvm_uart = device_get_binding(DT_LABEL(DT_CHOSEN(zephyr_console)));
@@ -547,11 +556,11 @@ void main(void) {
   // clint_cfg_timecompare_us(systemtimer_us);
   // Initialize microTVM RPC server, which will receive commands from the UART and execute them.
   microtvm_rpc_server_t server = MicroTVMRpcServerInit(write_serial, NULL);
-  printf("DEF\n");
+  // printf("DEF\n");
   CHECK_EQ(TVMGraphExecutorModule_Register(), kTvmErrorNoError,
            "failed to register GraphExecutor TVMModule");
-  TVMLogf("microTVM ETISSVP runtime - running");
-  printf("GHI\n");
+  TVMLogf("microTVM GVSoC runtime - running");
+  // printf("GHI\n");
 
   // The main application loop. We continuously read commands from the UART
   // and dispatch them to MicroTVMRpcServerLoop().
@@ -559,17 +568,17 @@ void main(void) {
 
     uint8_t c;
     // int ret_code = read(STDIN_FILENO, &c, 1);
-    TVMPlatformTimerStart();
+    // TVMPlatformTimerStart();
     int ret_code = 1 - semihost_read(STDIN_FILENO, &c, 1);
-    TVMPlatformTimerStop(&x);
-    printf("ret_code=%d c=%c\n", ret_code, c);
-    printf("x=%f\n",x);
+    // TVMPlatformTimerStop(&x);
+    // printf("ret_code=%d c=%c\n", ret_code, c);
+    // printf("x=%f\n",x);
     if (ret_code < 0) {
-      perror("microTVM runtime: read failed");
-      return;
+      // perror("microTVM runtime: read failed");
+      return 1;
     } else if (ret_code == 0) {
-      fprintf(stderr, "microTVM runtime: 0-length read, exiting!\n");
-      return;
+      // fprintf(stderr, "microTVM runtime: 0-length read, exiting!\n");
+      return 2;
     }
     uint8_t* cursor = &c;
     size_t bytes_remaining = 1;
@@ -620,7 +629,7 @@ void main(void) {
     // TODO: disable interrupts
     uint8_t* arr_ptr = &c;
     while (bytes_remaining > 0) {
-      printf("bytes_remaining_=%d\n", bytes_remaining);
+      // printf("bytes_remaining_=%d\n", bytes_remaining);
       // Pass the received bytes to the RPC server.
       tvm_crt_error_t err = MicroTVMRpcServerLoop(server, &arr_ptr, &bytes_remaining);
       if (err != kTvmErrorNoError && err != kTvmErrorFramingShortPacket) {
@@ -634,10 +643,11 @@ void main(void) {
         g_num_bytes_requested = 0;
       }
     }
-    printf("done\n");
+    // printf("done\n");
     //lock = 0;
   }
 
-  // TVMLogf("microTVM ETISSVP runtime - done");
+  TVMLogf("microTVM GVSoC  runtime - done");
+  return 0;
 
 }
