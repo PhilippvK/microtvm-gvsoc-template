@@ -1,2 +1,2 @@
-# microtvm-etissvp-template
+# microtvm-gvsoc-template
 WIP

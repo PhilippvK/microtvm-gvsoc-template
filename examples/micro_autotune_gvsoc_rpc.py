@@ -39,26 +39,21 @@ import sys
 logging.basicConfig(level="WARNING", stream=sys.stdout)
 
 DIR = Path(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-ETISS_DIR = os.environ.get("ETISS_DIR", None)
-assert ETISS_DIR, "Missing environment variable: ETISS_DIR"
-RISCV_DIR = os.environ.get("RISCV_DIR", None)
-assert RISCV_DIR, "Missing environment variable: RISCV_DIR"
-# ETISSVP_SCRIPT = os.environ.get("ETISSVP_SCRIPT", str(DIR / "template_project" / "scripts" / "run.sh"))
-ETISSVP_SCRIPT = os.environ.get("ETISSVP_SCRIPT", str(Path(ETISS_DIR) / "bin" / "run_helper.sh"))
-assert ETISSVP_SCRIPT, "Missing environment variable: ETISSVP_SCRIPT"
-ETISSVP_INI = os.environ.get("ETISSVP_INI", str(DIR / "template_project" / "scripts" / "memsegs.ini"))
-assert ETISSVP_INI, "Missing environment variable: ETISSVP_INI"
+
+PULP_GCC_DIR = os.environ.get("PULP_GCC_DIR", None)
+assert PULP_GCC_DIR, "Missing environment variable: PULP_GCC_DIR"
+
+PULP_FREERTOS_DIR = os.environ.get("PULP_FREERTOS_DIR", None)
+assert PULP_FREERTOS_DIR, "Missing environment variable: PULP_FREERTOS_DIR"
 
 
 project_options = {
     "project_type": "host_driven",
+    # "verbose": True,
     "verbose": False,
     "debug": False,
-    "transport": True,
-    "etiss_path": ETISS_DIR,
-    "riscv_path": RISCV_DIR,
-    "etissvp_script": ETISSVP_SCRIPT,
-    "etissvp_script_args": "plic clint uart v" + (" -i" + ETISSVP_INI if ETISSVP_INI else "")
+    "pulp_freertos_path": PULP_FREERTOS_DIR,
+    "pulp_gcc_path": PULP_GCC_DIR,
 }
 
 ####################
@@ -97,8 +92,6 @@ params = {"weight": weight_sample}
 # --------------------------------------------------------------------------
 TARGET = tvm.target.target.micro("host")
 RUNTIME = tvm.relay.backend.Runtime("crt", {"system-lib": True})
-#TARGET = tvm.target.target.riscv_cpu("bare_etiss_processor")
-BOARD = "bare_etiss_processor"
 
 #########################
 # Extracting tuning tasks
@@ -129,7 +122,7 @@ builder = tvm.autotvm.LocalBuilder(
 )
 
 # runner = tvm.autotvm.LocalRunner(number=1, repeat=1, timeout=100, module_loader=module_loader)
-key = "etissvp"
+key = "gvsoc"
 host = "0.0.0.0"
 port = 9190
 runner = tvm.autotvm.RPCRunner(key, host, port, number=1, repeat=1, timeout=100, module_loader=module_loader, n_parallel=5)
