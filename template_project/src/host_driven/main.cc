@@ -224,7 +224,7 @@ tvm_crt_error_t TVMPlatformTimerStop(double* elapsed_time_seconds) {
   g_utvm_timer_running = 0;
   int g_utvm_stop_time = csr_read(0x780);
   if (g_utvm_stop_time < g_utvm_start_time_micros) { // overflow
-    *elapsed_time_seconds = ((1 << 32) - (g_utvm_start_time - g_utvm_stop_time_micros)) / 100000000.0;
+    *elapsed_time_seconds = (((uint64_t)1 << 32) - (g_utvm_start_time_micros - g_utvm_stop_time)) / 100000000.0;
   } else {
     *elapsed_time_seconds = (g_utvm_stop_time - g_utvm_start_time_micros) / 100000000.0;
   }
