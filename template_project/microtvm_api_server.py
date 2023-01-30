@@ -274,7 +274,7 @@ class Handler(server.ProjectAPIHandler):
         else:
             check_call(cmake_args, cwd=BUILD_DIR, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
-        print("BUILD_DIR", BUILD_DIR)
+        # print("BUILD_DIR", BUILD_DIR)
         # input(">")
         args = ["make", "-j2"]
         if options.get("verbose"):
@@ -293,7 +293,7 @@ class Handler(server.ProjectAPIHandler):
         assert (new_flag & os.O_NONBLOCK) != 0, "Cannot set file descriptor {fd} to non-blocking"
 
     def open_transport(self, options):
-        print("open_transport")
+        # print("open_transport")
         env = os.environ
         env["PULP_RISCV_GCC_TOOLCHAIN"] = options["pulp_gcc_path"]
         gvsoc_args = []
@@ -319,7 +319,7 @@ class Handler(server.ProjectAPIHandler):
         )
 
     def close_transport(self):
-        print("close_transport")
+        # print("close_transport")
         if self._proc is not None:
             proc = self._proc
             self._proc = None
@@ -337,7 +337,7 @@ class Handler(server.ProjectAPIHandler):
         return True
 
     def read_transport(self, n, timeout_sec):
-        print("read_transport", n, timeout_sec)
+        # print("read_transport", n, timeout_sec)
         if self._proc is None:
             raise server.TransportClosedError()
 
@@ -349,7 +349,7 @@ class Handler(server.ProjectAPIHandler):
             self._await_ready([fd], [], end_time=end_time)
             # print("os.ready")
             to_return = os.read(fd, n)
-            print("->", to_return)
+            # print("->", to_return)
         except BrokenPipeError:
             to_return = 0
 
@@ -360,7 +360,7 @@ class Handler(server.ProjectAPIHandler):
         return to_return
 
     def write_transport(self, data, timeout_sec):
-        print("write_transport", data, timeout_sec)
+        # print("write_transport", data, timeout_sec)
         if self._proc is None:
             raise server.TransportClosedError()
 
