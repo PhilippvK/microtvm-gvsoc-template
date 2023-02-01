@@ -36,8 +36,8 @@ import tvm
 
 import logging
 import sys
-# logging.basicConfig(level="WARNING", stream=sys.stdout)
-logging.basicConfig(level="DEBUG", stream=sys.stdout)
+logging.basicConfig(level="WARNING", stream=sys.stdout)
+# logging.basicConfig(level="DEBUG", stream=sys.stdout)
 
 DIR = Path(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
