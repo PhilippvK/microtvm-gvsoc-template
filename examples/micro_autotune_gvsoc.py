@@ -55,6 +55,7 @@ project_options = {
     "debug": False,
     "pulp_freertos_path": PULP_FREERTOS_DIR,
     "pulp_gcc_path": PULP_GCC_DIR,
+    "memory_size_bytes": 2**17,
 }
 
 ####################
