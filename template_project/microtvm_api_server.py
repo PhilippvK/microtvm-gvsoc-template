@@ -261,7 +261,9 @@ class Handler(server.ProjectAPIHandler):
             raise RuntimeError("Project Config 'pulp_gcc_path' undefined!")
 
         if options.get("memory_size_bytes"):
-            cmake_args.append("-DMEMORY_SIZE_BYTES=" + options["memory_size_bytes"])
+            b = int(options["memory_size_bytes"])
+            if b > 0:
+                cmake_args.append("-DMEMORY_SIZE_BYTES=" + str(b))
 
         if options.get("debug"):
             cmake_args.append("-DCMAKE_BUILD_TYPE=DEBUG")
