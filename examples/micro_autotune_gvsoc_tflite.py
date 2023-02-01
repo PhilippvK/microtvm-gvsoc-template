@@ -46,6 +46,9 @@ assert PULP_GCC_DIR, "Missing environment variable: PULP_GCC_DIR"
 PULP_FREERTOS_DIR = os.environ.get("PULP_FREERTOS_DIR", None)
 assert PULP_FREERTOS_DIR, "Missing environment variable: PULP_FREERTOS_DIR"
 
+assert len(sys.argv) == 2
+model_path = sys.argv[1]
+
 
 project_options = {
     "project_type": "host_driven",
@@ -54,6 +57,7 @@ project_options = {
     "debug": False,
     "pulp_freertos_path": PULP_FREERTOS_DIR,
     "pulp_gcc_path": PULP_GCC_DIR,
+    "memory_size_bytes": 2**17,
 }
 
 
@@ -101,11 +105,10 @@ class ModelInfo:
 
 print("### TVMFlow.loadModel")
 
-MODELS_DIR = "/nfs/TUEIEDAscratch/ga87puy/mlonmcu_shared/models/"
-MODEL = "resnet"
+MODEL = model_path
 
 import os
-modelBuf = open(os.path.join(MODELS_DIR, MODEL, MODEL + ".tflite"), "rb").read()
+modelBuf = open(model_path, "rb").read()
 
 import tflite
 tflModel = tflite.Model.GetRootAsModel(modelBuf, 0)
