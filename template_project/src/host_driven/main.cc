@@ -38,6 +38,8 @@
 #define CSR_PULP_PCER 0xCC0
 #define CSR_PULP_PCCR0 0x780
 
+// #define DBG
+
 #define csr_write(csr, val)         \
 ({                \
   unsigned long __v = (unsigned long)(val);   \
@@ -205,12 +207,16 @@ tvm_crt_error_t TVMPlatformMemoryFree(void* ptr, DLDevice dev) {
 MemoryManagerInterface* memory_manager;
 
 tvm_crt_error_t TVMPlatformMemoryAllocate(size_t num_bytes, DLDevice dev, void** out_ptr) {
+#ifdef DBG
   TVMLogf("TVMPlatformMemoryAllocate %u\n", num_bytes);
+#endif
   return memory_manager->Allocate(memory_manager, num_bytes, dev, out_ptr);
 }
 
 tvm_crt_error_t TVMPlatformMemoryFree(void* ptr, DLDevice dev) {
+#ifdef DBG
   TVMLogf("TVMPlatformMemoryFree\n");
+#endif
   return memory_manager->Free(memory_manager, ptr, dev);
 }
 
