@@ -80,7 +80,7 @@ SET(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS} \
 
 ADD_EXECUTABLE_GVSOC_PULP(app src/main.cc)
 
-set(CRT_LIBS common microtvm_rpc_server microtvm_rpc_common graph_executor graph_executor_module aot_executor aot_executor_module)
+set(CRT_LIBS common microtvm_rpc_server microtvm_rpc_common graph_executor graph_executor_module aot_executor aot_executor_module memory)
 set(CRT_LIB_BASE crt/src/runtime/crt)
 
 list(FIND CRT_LIBS "common" COMMON_IDX)
@@ -116,6 +116,11 @@ file(GLOB_RECURSE app_srcs src/**.c)
 target_sources(app PRIVATE ${app_srcs})
 target_include_directories(app PRIVATE crt_config ${CMAKE_SOURCE_DIR}/include crt/include model/codegen/host/include/)
 
+
+IF("${MEMORY_SIZE_BYTES}" STREQUAL "")
+  SET(MEMORY_SIZE_BYTES 65536)
+ENDIF()
+target_compile_definitions(tvm_model PUBLIC -DMEMORY_SIZE_BYTES=${MEMORY_SIZE_BYTES})
 
 
 add_custom_target(run

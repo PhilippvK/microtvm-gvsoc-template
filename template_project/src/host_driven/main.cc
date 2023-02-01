@@ -27,6 +27,7 @@
 #include <string.h>
 #include <tvm/runtime/crt/logging.h>
 #include <tvm/runtime/crt/microtvm_rpc_server.h>
+#include <tvm/runtime/crt/page_allocator.h>
 #include <tvm/runtime/crt/graph_executor_module.h>
 #include <unistd.h>
 
@@ -187,7 +188,7 @@ tvm_crt_error_t TVMPlatformGenerateRandom(uint8_t* buffer, size_t num_bytes) {
   return kTvmErrorNoError;
 }
 
-tvm_crt_error_t TVMPlatformMemoryAllocate(size_t num_bytes, DLDevice dev, void** out_ptr) {
+/*tvm_crt_error_t TVMPlatformMemoryAllocate(size_t num_bytes, DLDevice dev, void** out_ptr) {
   TVMLogf("TVMPlatformMemoryAllocate %u\n", num_bytes);
   if (num_bytes == 0) {
     num_bytes = sizeof(int);
@@ -200,6 +201,17 @@ tvm_crt_error_t TVMPlatformMemoryFree(void* ptr, DLDevice dev) {
   TVMLogf("TVMPlatformMemoryFree\n");
   free(ptr);
   return kTvmErrorNoError;
+}*/
+MemoryManagerInterface* memory_manager;
+
+tvm_crt_error_t TVMPlatformMemoryAllocate(size_t num_bytes, DLDevice dev, void** out_ptr) {
+  TVMLogf("TVMPlatformMemoryAllocate %u\n", num_bytes);
+  return memory_manager->Allocate(memory_manager, num_bytes, dev, out_ptr);
+}
+
+tvm_crt_error_t TVMPlatformMemoryFree(void* ptr, DLDevice dev) {
+  TVMLogf("TVMPlatformMemoryFree\n");
+  return memory_manager->Free(memory_manager, ptr, dev);
 }
 
 
@@ -231,8 +243,16 @@ tvm_crt_error_t TVMPlatformTimerStop(double* elapsed_time_seconds) {
   return kTvmErrorNoError;
 }
 
+uint8_t memory[MEMORY_SIZE_BYTES];
 
 int main(void) {
+
+  int status =
+      PageMemoryManagerCreate(&memory_manager, memory, sizeof(memory), 8 /* page_size_log2 */);
+  if (status != 0) {
+    fprintf(stderr, "error initiailizing memory manager\n");
+    return 2;
+  }
 
   // Initialize microTVM RPC server, which will receive commands from the UART and execute them.
   microtvm_rpc_server_t server = MicroTVMRpcServerInit(write_serial, NULL);
