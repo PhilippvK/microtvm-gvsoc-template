@@ -4,6 +4,7 @@ SET(GVSOC_TARGET_LIB_DIR ${GVSOC_LIB_DIR}/target/pulp)
 MACRO(GVSOC_PULP_SETTINGS_PRE)
     SET(GVSOC_PULP_INCLUDES
             ${GVSOC_TARGET_LIB_DIR}/include
+            ${PULP_FREERTOS_DIR}/template/hello_world
             ${GVSOC_LIB_DIR}/target/arch
             ${GVSOC_LIB_DIR}/libc/malloc/include
             ${GVSOC_LIB_DIR}/drivers/include
