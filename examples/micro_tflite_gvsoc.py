@@ -47,6 +47,9 @@ DIR = Path(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 PULP_GCC_DIR = os.environ.get("PULP_GCC_DIR", None)
 assert PULP_GCC_DIR, "Missing environment variable: PULP_GCC_DIR"
 
+PULP_LLVM_DIR = os.environ.get("PULP_LLVM_DIR", None)
+assert PULP_LLVM_DIR, "Missing environment variable: PULP_LLVM_DIR"
+
 PULP_FREERTOS_DIR = os.environ.get("PULP_FREERTOS_DIR", None)
 assert PULP_FREERTOS_DIR, "Missing environment variable: PULP_FREERTOS_DIR"
 
@@ -58,6 +61,8 @@ project_options = {
     "debug": False,
     "pulp_freertos_path": PULP_FREERTOS_DIR,
     "pulp_gcc_path": PULP_GCC_DIR,
+    "pulp_llvm_path": PULP_LLVM_DIR,
+    "memory_size_bytes": 2**17,
 }
 
 model_url = "https://people.linaro.org/~tom.gall/sine_model.tflite"

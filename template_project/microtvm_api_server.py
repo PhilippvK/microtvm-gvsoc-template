@@ -137,6 +137,12 @@ PROJECT_OPTIONS = [
         help="Path to the installed Pulp GCC directory.",
     ),
     server.ProjectOption(
+        "pulp_llvm_path",
+        optional=["build"],
+        type="str",
+        help="Path to the installed Pulp GCC directory.",
+    ),
+    server.ProjectOption(
         "trace_file",
         optional=["flash"],
         type="bool",
@@ -259,6 +265,11 @@ class Handler(server.ProjectAPIHandler):
             cmake_args.append("-DRISCV_ELF_GCC_PREFIX=" + options["pulp_gcc_path"])
         else:
             raise RuntimeError("Project Config 'pulp_gcc_path' undefined!")
+
+        if options.get("pulp_llvm_path"):
+            cmake_args.append("-DLLVM_DIR=" + options["pulp_llvm_path"])
+        else:
+            raise RuntimeError("Project Config 'pulp_llvm_path' undefined!")
 
         if options.get("memory_size_bytes"):
             b = int(options["memory_size_bytes"])
