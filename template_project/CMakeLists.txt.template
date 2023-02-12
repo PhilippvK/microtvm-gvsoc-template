@@ -21,7 +21,7 @@ cmake_minimum_required(VERSION 3.13.1)
 
 SET(ENABLE_LTO OFF CACHE BOOL "Whether to enable link-time optimization")
 
-SET(CMAKE_TOOLCHAIN_FILE "cmake/toolchain.cmake")
+SET(CMAKE_TOOLCHAIN_FILE "cmake/toolchain_llvm.cmake")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 SET(CMAKE_SYSTEM_NAME Generic)
