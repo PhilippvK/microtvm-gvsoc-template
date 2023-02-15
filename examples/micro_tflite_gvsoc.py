@@ -62,6 +62,7 @@ project_options = {
     "pulp_freertos_path": PULP_FREERTOS_DIR,
     "pulp_gcc_path": PULP_GCC_DIR,
     "pulp_llvm_path": PULP_LLVM_DIR,
+    "tool_chain": "llvm", # llvm for compilation with llvm, gcc for complition with gcc
     "memory_size_bytes": 2**17,
 }
 

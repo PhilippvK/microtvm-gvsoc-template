@@ -125,6 +125,13 @@ if IS_TEMPLATE:
 
 PROJECT_OPTIONS = [
     server.ProjectOption(
+        "toolchain",
+        optional=["build", "flash", "open_transport"],
+        type="str",
+        choices=["llvm", "gcc"], # I do not know how to parse it. 
+        help="Choose the toolchain from llvm and gcc.",
+    ),
+    server.ProjectOption(
         "pulp_freertos_path",
         optional=["build", "flash", "open_transport"],
         type="str",
@@ -140,7 +147,7 @@ PROJECT_OPTIONS = [
         "pulp_llvm_path",
         optional=["build"],
         type="str",
-        help="Path to the installed Pulp GCC directory.",
+        help="Path to the installed Pulp LLVM directory.",
     ),
     server.ProjectOption(
         "trace_file",
@@ -255,6 +262,9 @@ class Handler(server.ProjectAPIHandler):
         BUILD_DIR.mkdir()
 
         cmake_args = ["cmake", ".."]
+        
+        assert options.get("toolchain") in ["llvm", "gcc"], f"toolchain must be llvm or gcc but get {options.get('toolchain')}"
+        cmake_args.append("-DTOOLCHAIN=" + options["toolchain"])
 
         if options.get("pulp_freertos_path"):
             cmake_args.append("-DPULP_FREERTOS_DIR=" + options["pulp_freertos_path"])

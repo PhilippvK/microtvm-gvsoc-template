@@ -53,12 +53,13 @@ assert PULP_FREERTOS_DIR, "Missing environment variable: PULP_FREERTOS_DIR"
 
 project_options = {
     "project_type": "host_driven",
-    # "verbose": True,
+    "verbose": True,
     "verbose": False,
     "debug": False,
     "pulp_freertos_path": PULP_FREERTOS_DIR,
     "pulp_gcc_path": PULP_GCC_DIR,
     "pulp_llvm_path": PULP_LLVM_DIR,
+    "toolchain": "llvm", # llvm for compilation with llvm, gcc for complition with gcc
     "memory_size_bytes": 2**17,
 }
 
