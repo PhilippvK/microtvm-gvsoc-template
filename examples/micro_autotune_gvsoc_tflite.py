@@ -49,6 +49,8 @@ assert PULP_LLVM_DIR, "Missing environment variable: PULP_LLVM_DIR"
 PULP_FREERTOS_DIR = os.environ.get("PULP_FREERTOS_DIR", None)
 assert PULP_FREERTOS_DIR, "Missing environment variable: PULP_FREERTOS_DIR"
 
+assert len(sys.argv) == 2, "a arg telling the location of the model is needed."
+model_path = sys.argv[1]
 
 project_options = {
     "project_type": "host_driven",
@@ -58,7 +60,7 @@ project_options = {
     "pulp_freertos_path": PULP_FREERTOS_DIR,
     "pulp_gcc_path": PULP_GCC_DIR,
     "pulp_llvm_path": PULP_LLVM_DIR,
-    "tool_chain": "llvm", # llvm for compilation with llvm, gcc for complition with gcc
+    "toolchain": "llvm", # llvm for compilation with llvm, gcc for complition with gcc
     "memory_size_bytes": 2**17,
 }
 

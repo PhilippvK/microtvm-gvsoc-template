@@ -45,7 +45,7 @@ PULP_GCC_DIR = os.environ.get("PULP_GCC_DIR", None)
 assert PULP_GCC_DIR, "Missing environment variable: PULP_GCC_DIR"
 
 PULP_LLVM_DIR = os.environ.get("PULP_LLVM_DIR", None)
-assert PULP_LLVM_DIR, "Missing environment variable: PULP_LLVM_DIR"
+assert PULP_LLVM_DIR, "Missing environment variable: PULP_LLVM_DIR (you can assign it with dummy value if llvm is not used.)"
 
 PULP_FREERTOS_DIR = os.environ.get("PULP_FREERTOS_DIR", None)
 assert PULP_FREERTOS_DIR, "Missing environment variable: PULP_FREERTOS_DIR"
