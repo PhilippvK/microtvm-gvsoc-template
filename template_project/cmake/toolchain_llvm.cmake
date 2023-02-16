@@ -39,7 +39,7 @@ SET(CV_CPPFLAGS "--target=riscv32 --gcc-toolchain=${RISCV_ELF_GCC_PREFIX} --sysr
 SET(CV_LDFLAGS "\
 -nostartfiles \
 -Wl,--gc-sections \
--Wl,-Map,memory.map") # -Wl,--print-gc-sections
+-Wl,-Map,memory.map -lm") # -Wl,--print-gc-sections
 
 # LIST(APPEND CV_LDFLAGS " -Wstack-usage=1024")
 
