@@ -1,6 +1,16 @@
 set(CLANG_VERSIONS 15 14)
 
 set(LLVM_DIR "" CACHE PATH "Lookup path for the llvm installation.")
+# https://stackoverflow.com/questions/28613394/check-cmake-cache-variable-in-toolchain-file
+# Problem: CMake runs toolchain files multiple times, but can't read cache variables on some runs.
+# Workaround: On first run (in which cache variables are always accessible), set an intermediary environment variable.
+if (LLVM_DIR)
+    # Environment variables are always preserved.
+    set(ENV{_LLVM_DIR} "${LLVM_DIR}")
+else ()
+    set(LLVM_DIR "$ENV{_LLVM_DIR}")
+endif ()
+
 MESSAGE("LLVM_DIR=${LLVM_DIR}")
 
 # Find clang
@@ -30,7 +40,6 @@ function(do_lookup program out)
     MESSAGE(STATUS "${program}_NAME_MATCH=${${program}_NAME_MATCH}")
     set(${out} ${${program}_NAME_MATCH} PARENT_SCOPE)
 endfunction()
-
 
 do_lookup(clang CLANG_EXECUTABLE)
 do_lookup(clang++ CLANG++_EXECUTABLE)

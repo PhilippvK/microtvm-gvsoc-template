@@ -201,6 +201,7 @@ class Handler(server.ProjectAPIHandler):
     }
 
     def generate_project(self, model_library_format_path, standalone_crt_dir, project_dir, options):
+
         project_dir = pathlib.Path(project_dir)
         # Make project directory.
         project_dir.mkdir()
@@ -262,7 +263,6 @@ class Handler(server.ProjectAPIHandler):
         BUILD_DIR.mkdir()
 
         cmake_args = ["cmake", ".."]
-        
         assert options.get("toolchain") in ["llvm", "gcc"], f"toolchain must be llvm or gcc but get {options.get('toolchain')}"
         cmake_args.append("-DTOOLCHAIN=" + options["toolchain"])
 

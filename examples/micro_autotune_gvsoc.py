@@ -53,7 +53,7 @@ assert PULP_FREERTOS_DIR, "Missing environment variable: PULP_FREERTOS_DIR"
 
 project_options = {
     "project_type": "host_driven",
-    "verbose": True,
+    #"verbose": True,
     "verbose": False,
     "debug": False,
     "pulp_freertos_path": PULP_FREERTOS_DIR,
