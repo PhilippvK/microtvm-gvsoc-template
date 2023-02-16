@@ -132,6 +132,20 @@ PROJECT_OPTIONS = [
         help="Choose the toolchain from llvm and gcc.",
     ),
     server.ProjectOption(
+        "arch",
+        optional=["build", "flash", "open_transport"],
+        type="str",
+        default="rv32imc",
+        help="arch of pulp, default value is rv32imc.",
+    ),
+    server.ProjectOption(
+        "abi",
+        optional=["build", "flash", "open_transport"],
+        type="str",
+        default="ilp32",
+        help="arch of pulp, default value is ilp32.",
+    ),
+    server.ProjectOption(
         "pulp_freertos_path",
         optional=["build", "flash", "open_transport"],
         type="str",
@@ -265,6 +279,10 @@ class Handler(server.ProjectAPIHandler):
         cmake_args = ["cmake", ".."]
         assert options.get("toolchain") in ["llvm", "gcc"], f"toolchain must be llvm or gcc but get {options.get('toolchain')}"
         cmake_args.append("-DTOOLCHAIN=" + options["toolchain"])
+        
+        cmake_args.append("-DRISCV_ARCH=" + options["arch"])
+        
+        cmake_args.append("-DRISCV_ABI=" + options["abi"])
 
         if options.get("pulp_freertos_path"):
             cmake_args.append("-DPULP_FREERTOS_DIR=" + options["pulp_freertos_path"])
