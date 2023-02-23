@@ -125,6 +125,27 @@ if IS_TEMPLATE:
 
 PROJECT_OPTIONS = [
     server.ProjectOption(
+        "toolchain",
+        optional=["build", "flash", "open_transport"],
+        type="str",
+        choices=["llvm", "gcc"], # I do not know how to parse it. 
+        help="Choose the toolchain from llvm and gcc.",
+    ),
+    server.ProjectOption(
+        "arch",
+        optional=["build", "flash", "open_transport"],
+        type="str",
+        default="rv32imc",
+        help="arch of pulp, default value is rv32imc.",
+    ),
+    server.ProjectOption(
+        "abi",
+        optional=["build", "flash", "open_transport"],
+        type="str",
+        default="ilp32",
+        help="arch of pulp, default value is ilp32.",
+    ),
+    server.ProjectOption(
         "pulp_freertos_path",
         optional=["build", "flash", "open_transport"],
         type="str",
@@ -135,6 +156,12 @@ PROJECT_OPTIONS = [
         optional=["build"],
         type="str",
         help="Path to the installed Pulp GCC directory.",
+    ),
+    server.ProjectOption(
+        "pulp_llvm_path",
+        optional=["build"],
+        type="str",
+        help="Path to the installed Pulp LLVM directory.",
     ),
     server.ProjectOption(
         "trace_file",
@@ -188,6 +215,7 @@ class Handler(server.ProjectAPIHandler):
     }
 
     def generate_project(self, model_library_format_path, standalone_crt_dir, project_dir, options):
+
         project_dir = pathlib.Path(project_dir)
         # Make project directory.
         project_dir.mkdir()
@@ -249,6 +277,12 @@ class Handler(server.ProjectAPIHandler):
         BUILD_DIR.mkdir()
 
         cmake_args = ["cmake", ".."]
+        assert options.get("toolchain") in ["llvm", "gcc"], f"toolchain must be llvm or gcc but get {options.get('toolchain')}"
+        cmake_args.append("-DTOOLCHAIN=" + options["toolchain"])
+        
+        cmake_args.append("-DRISCV_ARCH=" + options["arch"])
+        
+        cmake_args.append("-DRISCV_ABI=" + options["abi"])
 
         if options.get("pulp_freertos_path"):
             cmake_args.append("-DPULP_FREERTOS_DIR=" + options["pulp_freertos_path"])
@@ -259,6 +293,11 @@ class Handler(server.ProjectAPIHandler):
             cmake_args.append("-DRISCV_ELF_GCC_PREFIX=" + options["pulp_gcc_path"])
         else:
             raise RuntimeError("Project Config 'pulp_gcc_path' undefined!")
+
+        if options.get("pulp_llvm_path"):
+            cmake_args.append("-DLLVM_DIR=" + options["pulp_llvm_path"])
+        else:
+            raise RuntimeError("Project Config 'pulp_llvm_path' undefined!")
 
         if options.get("memory_size_bytes"):
             b = int(options["memory_size_bytes"])
