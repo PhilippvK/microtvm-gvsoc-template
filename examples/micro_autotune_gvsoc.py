@@ -61,7 +61,7 @@ project_options = {
     "pulp_llvm_path": PULP_LLVM_DIR,
     "toolchain": "llvm", # llvm for compilation with llvm, gcc for complition with gcc
     "arch": "rv32imac",
-    "abi": "ilp64",
+    "abi": "ilp32",
     "memory_size_bytes": 2**17,
 }
 
