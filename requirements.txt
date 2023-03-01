@@ -2,3 +2,11 @@ pyelftools
 six
 prettytable
 pyyaml
+numpy
+decorator
+psutil
+typing_extensions
+scipy
+attrs
+tornado
+cloudpickle
