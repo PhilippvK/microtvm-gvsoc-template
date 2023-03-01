@@ -6,29 +6,34 @@ This repository contains a MicroTVM ProjectAPI Template for the GVSoC (Pulp) tar
 
 ### Install required packages
 
-TODO (cmake, ...)
+On Ubuntu 20.04 the following packages are required:
+
+```bash
+sudo apt install -y python3 python3-dev python3-setuptools gcc libtinfo-dev zlib1g-dev build-essential cmake libedit-dev libxml2-dev git
+```
 
 ### Install GCC toolchain
 
-Any multilib RISC-V compiler should work for the default set of extensions. Example Download: TODO
+Any multilib RISC-V compiler should work for the default set of extensions. Example Download: https://github.com/stnolting/riscv-gcc-prebuilt
 
-If you are going to use XPULP instructions, build your own `pulp_gcc` (see TODO) or download a prebuilt one here: TODO
+If you are going to use XPULP instructions, build your own `pulp_gcc` (see https://github.com/pulp-platform/pulp-riscv-gnu-toolchain) or download a prebuilt one here: https://github.com/pulp-platform/pulp-riscv-gnu-toolchain/releases/download/v1.0.16/v1.0.16-pulp-riscv-gcc-ubuntu-18.tar.bz2
 
 ### Install LLVM toolchain (optional)
 
-Install a modern LLVM version (e.g. 14.0) if you only plan to use standard extensions: TODO
+Install a modern LLVM version (e.g. 14.0) if you only plan to use standard extensions: https://releases.llvm.org/download.html
 
-For supporting XPULP instructions, feel free to build your own `pulp_llvm` (see TODO) or download a prebuilt one here: TODO
+For supporting XPULP instructions, feel free to build your own `pulp_llvm` (see https://github.com/pulp-platform/llvm-project) or download a prebuilt one here: https://versaweb.dl.sourceforge.net/project/pulp-llvm-project/nightly/riscv32-pulp-llvm-ubuntu2004.tar.gz
 
-### Install PULP FreeRTOS
+### Install PULP FreeRTOS + GVSoC
 
-TODO
+Follow instructions here: https://github.com/pulp-platform/pulp-freertos
 
 ### Install TVM
 
-TODO
+Follow instructions here: https://tvm.apache.org/docs/install/from_source.html
 
-### Install PULP-FreeRTOS
+**Warning:** The options `USE_MICRO`, `USE_MICRO_STANDALONE_RUNTIME` and `USE_LLVM` have to be enabled in `config.cmake` before compilation.
+
 
 ## Usage
 
@@ -52,25 +57,21 @@ export PYTHONPATH=/path/to/tvm/python  # only required using custom tvm build
 export PULP_FREERTOS_DIR=/path/to/pulp_freertos
 export PULP_GCC_DIR=/path/to/pulp_gcc
 export PULP_LLVM_DIR=/path/to/pulp_llvm  # leave empty if unused
-
-
 ```
 
-**Debugging Tipps:** TODO
 
 ## Configuration Options
 
-- `verbose`: `true`/`false`
-- `debug`: `true`/`false`
-- `toolchain`: `gcc`/`llvm`
-- `arch`: i.e. `rv32imc`
-- `abi`: i.e. `ilp32`
-- `pulp_freertos_path`: TODO
-- `pulp_gcc_path`: TODO
-- `pulp_llvm_path`: TODO
-- `trace_file`: TODO
-- `memory_size_bytes`: TODO
+- `verbose`: `true`/`false` (Wether compiler messages should be printed out during compilation. Useful for debugging errors)
+- `debug`: `true`/`false` (Build executable in DEBUG instead of RELEASE mode)
+- `toolchain`: `gcc`/`llvm` (Choose prefered SW toolchain/compiler)
+- `arch`: i.e. `rv32imc` (RISC-V arch to use during compilation)
+- `abi`: i.e. `ilp32` (RISC-V abi to use during compilation)
+- `trace_file`: `true`/`false` (Write trace of executed instruction to a file)
+- `memory_size_bytes`: e.g. `131072` (Size of the used memory arena for runtime allocations. Limited by sections in liker script. Minimum depends on workload.)
 - `project_type`: i.e. `host_driven`
+- `pulp_freertos_path`/`pulp_gcc_path`/`pulp_llvm_path` (Path to dependencies)
+
 
 ## Open TODOs
 
