@@ -205,7 +205,7 @@ class Handler(server.ProjectAPIHandler):
         )
 
     # These files and directories will be recursively copied into generated projects from the CRT.
-    CRT_COPY_ITEMS = ("include", "Makefile", "src")
+    CRT_COPY_ITEMS = ("include", "src")
 
     API_SERVER_CRT_LIBS_TOKEN = "<API_SERVER_CRT_LIBS>"
 
