@@ -4,6 +4,21 @@ This repository contains a MicroTVM ProjectAPI Template for the GVSoC (Pulp) tar
 
 ## Prerequisites
 
+### Setup Python dependencies
+
+Create and enter an virtual environment first:
+
+```
+virtualenv -p python3.8 venv
+source venv/bin/activate
+```
+
+Install recommended packages for  running the examples:
+
+```
+pip install -r requirements.txt
+```
+
 ### Install required packages
 
 On Ubuntu 20.04 the following packages are required:
@@ -27,6 +42,21 @@ For supporting XPULP instructions, feel free to build your own `pulp_llvm` (see 
 ### Install PULP FreeRTOS + GVSoC
 
 Follow instructions here: https://github.com/pulp-platform/pulp-freertos
+
+TLDR;
+
+```
+git clone https://github.com/pulp-platform/pulp-freertos.git
+export RISCV=/path/to/riscv/gcc
+git submodule update --init --recursive
+cd pulp-freertos
+source env/pulp.sh
+cp -r template/hello_world helloworld
+cd helloworld
+pip install pyelftools prettytable six
+make all
+make run-gvsoc  # implicitly installs gvsoc simulator
+```
 
 ### Install TVM
 
